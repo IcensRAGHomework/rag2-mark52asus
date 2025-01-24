@@ -27,7 +27,8 @@ def hw02_1(q1_pdf):
     print("檔名:", last_chunk.metadata.get("source", "未知"))
     print("頁數:", last_chunk.metadata.get("page", "未知"))
     print("內文:")
-    return (last_chunk.page_content)
+    print(last_chunk.page_content)
+    return last_chunk
 
 def hw02_2(q2_pdf):
     pass
@@ -35,5 +36,6 @@ def hw02_2(q2_pdf):
 if __name__ == '__main__':
     # 讀取PDF文件
     q1_pdf = "./OpenSourceLicenses.pdf"  # 替換成你的PDF文件路徑
+    #q1_pdf = "./綠色能源的現況與未來發展趨勢之探索.pdf"  # 替換成你的PDF文件路徑
     response = hw02_1(q1_pdf)
     pprint(response)
