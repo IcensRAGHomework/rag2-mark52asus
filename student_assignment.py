@@ -41,11 +41,11 @@ def hw02_2(q2_pdf):
 
     # 使用 RecursiveCharacterTextSplitter 配置針對章節分割
     text_splitter = RecursiveCharacterTextSplitter(
-        chunk_size=52,  # 每個 chunk 的最大字數
+        chunk_size=53,  # 每個 chunk 的最大字數
         chunk_overlap=0,  # 無重疊
         separators=[
             r"\n.*第.*章.*?\n",  # 僅分割章節
-            r"第.*(?:\d+-\d+|\d+).*條.*?\n"  # 匹配格式：第 x 條或第 x-x 條, # 分割條文 (例如：第 1 條)
+            r"第.*(?:\d+-\d+|\d+).*條.*\n"  # 匹配格式：第 x 條或第 x-x 條, # 分割條文 (例如：第 1 條)
         ],
         is_separator_regex=True  # 啟用正則表達式
     )
