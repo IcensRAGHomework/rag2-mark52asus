@@ -57,11 +57,11 @@ def hw02_2(q2_pdf):
         pprint(f"\nChunk {i + 1}:\n{chunk}")
     
     print(f"總共分割為 {len(chunks)} 個 chunks")
-    return chunks
+    return len(chunks)
 
 if __name__ == '__main__':
     # 讀取PDF文件
     #q1_pdf = "./OpenSourceLicenses.pdf"  # 替換成你的PDF文件路徑
     #response = hw02_1(q1_pdf)
     response = hw02_2(q2_pdf)
-    #pprint(response)
+    pprint(response)
