@@ -39,59 +39,29 @@ def hw02_2(q2_pdf):
     # 將所有頁面內容合併為完整文本，避免跨頁問題
     full_text = "\n".join(doc.page_content for doc in documents)
 
-    # 初步按行分割文本
-    lines = full_text.split("\n")
+    # 使用 RecursiveCharacterTextSplitter 配置針對章節分割
+    text_splitter = RecursiveCharacterTextSplitter(
+        chunk_size=12,  # 每個 chunk 的最大字數
+        chunk_overlap=0,  # 無重疊
+        separators=[
+            r"\n.*第.*章.*?\n",  # 僅分割章節
+            r"第.*(?:\d+-\d+|\d+).*條.*?\n"  # 匹配格式：第 x 條或第 x-x 條, # 分割條文 (例如：第 1 條)
+        ],
+        is_separator_regex=True  # 啟用正則表達式
+    )
 
-    final_chunks = []
-    buffer = []
-    in_article = False  # 用來追蹤是否處於條文的內容中
+    # 分割文本
+    chunks = text_splitter.split_text(full_text)
+    # 測試顯示部分分割結果
+    for i, chunk in enumerate(chunks[:-1]):  # 顯示全部chunks
+        pprint(f"\nChunk {i + 1}:\n{chunk}")
+    
+    print(f"總共分割為 {len(chunks)} 個 chunks")
+    return chunks
 
-    for line in lines:
-        line = line.strip()  # 去除多餘空白
-        if not line:
-            continue  # 跳過空行
-
-        # 合併「法規名稱」和「修正日期」
-        if "法規名稱：" in line or "修正日期：" in line:
-            buffer.append(line)
-            continue
-
-        # 如果遇到章節標題
-        if line.startswith("第") and "章" in line:
-            if buffer:
-                final_chunks.append("\n".join(buffer).strip())  # 儲存前面的內容
-                buffer = []
-            final_chunks.append(line)  # 單獨儲存章節標題
-            in_article = False  # 重置條文追蹤狀態
-            continue
-
-        # 如果遇到條文標題
-        if line.startswith("第") and "條" in line:
-            # 檢查是否為數字條文或帶有附加標記的條文
-            if re.match(r"^第\s*\d+(-\d+)?\s*條", line):  # 匹配數字條文或「-1」形式的條文
-                if buffer:
-                    final_chunks.append("\n".join(buffer).strip())  # 儲存前面的條文內容
-                    buffer = []
-                buffer.append(line)  # 開始新的條文
-                in_article = True  # 標記進入條文內容
-                continue
-
-        # 條文的內容，繼續追加到當前 buffer
-        buffer.append(line)
-
-    # 儲存最後剩餘的內容
-    if buffer:
-        final_chunks.append("\n".join(buffer).strip())
-
-    # 輸出每個 chunk 的詳細內容以供檢查 (僅輸出前 5 個)
-    for i, chunk in enumerate(final_chunks[:114]):
-        print(f"Chunk {i+1}:\n{chunk}\n{'-'*80}")
-
-    # 回傳 chunks 數量
-    return len(final_chunks)
 if __name__ == '__main__':
     # 讀取PDF文件
     #q1_pdf = "./OpenSourceLicenses.pdf"  # 替換成你的PDF文件路徑
     #response = hw02_1(q1_pdf)
     response = hw02_2(q2_pdf)
-    pprint(response)
+    #pprint(response)
